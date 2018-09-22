@@ -14,7 +14,6 @@ The server can be started by r
 sudo python rpi-server.py
 ```
 
-The server can be accessed 
 You can find the IP address of your server by 
 ```
 sudo ifconfig
