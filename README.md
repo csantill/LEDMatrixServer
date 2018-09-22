@@ -2,8 +2,9 @@
 Flask based server 
 
 
+
 ```
-git -clone https://github.com/csantill/LEDMatrixServer.git
+git clone https://github.com/csantill/LEDMatrixServer.git
 cd LEDMatrixServer/
 pip install -r requirements.txt
 ```
