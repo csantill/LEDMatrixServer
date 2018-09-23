@@ -1,4 +1,5 @@
 import os
+import random
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
@@ -41,6 +42,10 @@ def LED_Message(text):
 	#subprocess.Popen("sudo ./demo -D 1 test.ppm --led-pwm-lsb-nanoseconds=100 --led-show-refresh  --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
 
 
+def randomColor():
+	key = random.choice(col.colors.keys())
+	color =col.colors[key]
+	return color
 
 app = Flask(__name__)
 
@@ -59,8 +64,8 @@ def api_ledmessage():
 	if request.headers['Content-Type'] == 'application/x-www-form-urlencoded':
 		Message = request.form
 		emulator = str(Message['message'])
-		text_message = ((emulator, col.AQUA	),("   ", (0, 0, 0)),(emulator, col.AQUA	))
-		print(text_message)
+		color = randomColor()
+		text_message = ((emulator, color	),("   ", (0, 0, 0)),(emulator, col.AQUA	))
 		LED_Message(text_message)
 		return render_template('main.html', name="main")
 
