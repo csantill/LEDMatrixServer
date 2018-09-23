@@ -36,3 +36,17 @@ http://192.168.1.220:5000/
 
 
 
+The web server is an interface to Henner Zeller RPI RGB LED matrix demo application
+
+```
+sudo apt-get update
+sudo apt-get install git
+sudo apt-get install libgraphicsmagick++-dev libwebp-dev
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev
+git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
+cd ~/rpi-rgb-led-matrix/utils
+make led-image-viewer
+make video-viewer
+cd ~/rpi-rgb-led-matrix/examples-api-use
+make 
+```
