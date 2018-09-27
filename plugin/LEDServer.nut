@@ -37,55 +37,100 @@ class UserConfig </ help="Integration plug-in for use with LED Server Speech Syn
 
 local config=fe.get_config(); // get the plugin settings configured by the user
 
-
-
-
 fe.add_transition_callback( "LEDServer_plugin_transition" );
 
 function LEDServerSendMessageToServer(message)
 {
-	fe.plugin_command_bg ("curl -H \"Content-type: application/json\" --request POST " + 
-	config["LEDserver"] + "led --data '"+message+"'" );
+    local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
+	config["LEDserver"] + @"led --data '"+message+@"'" ;
+    print(commandLine +"\n");
+	system("curl "+commandLine);
+	//fe.plugin_command_bg ("curl" , commandLine);
 }
 
 function LEDServerBuildJson(emul,emulcolor,title,titlecolor)
 { 
-	q = "\"";
-	mess1 = q + "emulator" + q;
-	mess2 =  q+ emul + q ;
-	message = "{" + mess1 +  ":"+ q+emulator+q+ "," +q+ "game" +q+ ":" +q+title+q+ "}" ;
+	local q = "\"";
+    local q2 = "\"";
+	local mess1 = q + "emulator" + q;
+	local mess2 =  q + emul + q ;
+	local message = "{" + mess1 +  ":"+ mess2 + "," + q + "game" + q + ":" + q + title + q + "}" ;
 	return message
 }
+// For debuggin purposes
+function when(w) {
+switch (w) {
+case 0:
+return "StartLayout";
+case 1:
+return "EndLayout";
+case 2:
+return "ToNewSelection";
+case 3:
+return "FromOldSelection";
+case 4:
+return "ToGame";
+case 5:
+return "FromGame";
+case 6:
+return "ToNewList";
+case 7:
+return "EndNavigation";
+case 100:
+return "OnDemand";
+case 101:
+return "Always";
+}
+}
+
+
 
 function LEDServer_plugin_transition( ttype, var, ttime ) {
 
 	if ( ScreenSaverActive )
 		return false;
 
+    local message="";
+
+	//print("vent " +when(ttype)+"\n");
+
 	switch ( ttype )
 	{
 	case Transition.StartLayout:
-		if (( var == FromTo.Frontend ) && ( config["welcome"].len() > 0 ))
-			
-			message = LEDServerBuildJson(config["welcome"],"aqua",config["welcome"],"red1");
+		if (( var == FromTo.Frontend ) && ( config["LEDwelcome"].len() > 0 ))
+			{
+			message = LEDServerBuildJson(config["LEDwelcome"],"aqua",config["LEDwelcome"],"red1");
 			LEDServerSendMessageToServer(message);
+            }
 
 		break;
 
 	case Transition.EndLayout:
-		if (( var == FromTo.Frontend ) && ( config["goodbye"].len() > 0 ))
-			message = LEDServerBuildJson(config["goodbye"],"aqua",config["welcome"],"red1");
+		if (( var == FromTo.Frontend ) && ( config["LEDgoodbye"].len() > 0 ))
+        {
+			message = LEDServerBuildJson(config["LEDgoodbye"],"aqua",config["LEDgoodbye"],"red1");
 			LEDServerSendMessageToServer(message);
+        }
 		break;
 
-	case Transition.ToGame:
+	case Transition.ToNewSelection:
+	//	local gamme = fe.game_info(Info.Name);
+	//	if (gamme.len() > 0)
+	//	{
+    //   print(gamme + "\n" );
+	//	}
+    //    print("\"" + fe.game_info( Info.Name ) + "\" \""+ fe.game_info( Info.Emulator ) + "\"" );
 		local title =  fe.game_info( Info.Title );
-		local emulator =  fe.game_info( Info.Emulator ) + " " + fe.game_info(Info.system);
-		
-
-		if ( title.len() > 0 )
-			message = LEDServerBuildJson(emulator,"aqua",title,"red1");
-			LEDServerSendMessageToServer(message);
+		if (title.len() > 0)
+		{
+			local emulator =  fe.game_info( Info.Emulator ) + " " + fe.game_info(Info.System);
+			if ( emulator.len() > 0 )
+			{
+				message = LEDServerBuildJson(emulator,"aqua",title,"red1");
+				print(message);
+				LEDServerSendMessageToServer(message);
+			}
+		}
 			break;
 	}
 
