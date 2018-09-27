@@ -20,7 +20,7 @@
 // The UserConfig class identifies plugin settings that can be configured
 // from Attract-Mode's configuration menu
 //
-class UserConfig </ help="Integration plug-in for use with LED Server Speech Synthesizer: http://LED Server.sourceforge.net" /> {
+class UserConfig </ help="Integration plug-in for use with LED Server : https://github.com/csantill/LEDMatrixServer" /> {
 	</ label="Server Address", help="Url of LED Webserver", order=1 />
 	LEDserver="http://LEDServer:5000/";
 
@@ -43,7 +43,7 @@ function LEDServerSendMessageToServer(message)
 {
     local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
 	config["LEDserver"] + @"led --data '"+message+@"'" ;
-    print(commandLine +"\n");
+ //   print(commandLine +"\n");
 	system("curl "+commandLine);
 	//fe.plugin_command_bg ("curl" , commandLine);
 }
@@ -59,28 +59,28 @@ function LEDServerBuildJson(emul,emulcolor,title,titlecolor)
 }
 // For debuggin purposes
 function when(w) {
-switch (w) {
-case 0:
-return "StartLayout";
-case 1:
-return "EndLayout";
-case 2:
-return "ToNewSelection";
-case 3:
-return "FromOldSelection";
-case 4:
-return "ToGame";
-case 5:
-return "FromGame";
-case 6:
-return "ToNewList";
-case 7:
-return "EndNavigation";
-case 100:
-return "OnDemand";
-case 101:
-return "Always";
-}
+	switch (w) {
+	case 0:
+		return "StartLayout";
+	case 1:
+		return "EndLayout";
+	case 2:
+		return "ToNewSelection";
+	case 3:
+		return "FromOldSelection";
+	case 4:
+		return "ToGame";
+	case 5:
+		return "FromGame";
+	case 6:
+		return "ToNewList";
+	case 7:
+		return "EndNavigation";
+	case 100:
+		return "OnDemand";
+	case 101:
+		return "Always";
+	}
 }
 
 
@@ -127,11 +127,11 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 			if ( emulator.len() > 0 )
 			{
 				message = LEDServerBuildJson(emulator,"aqua",title,"red1");
-				print(message);
+//				print(message);
 				LEDServerSendMessageToServer(message);
 			}
 		}
-			break;
+		break;
 	}
 
 	return false; // must return false
