@@ -1,5 +1,6 @@
 import os
 import random
+import sys
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
@@ -40,7 +41,7 @@ def LED_Message(text):
 	subprocess.Popen("sudo ./demo -D 1 /tmp/ledmessage.ppm   --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
 	#os.system("./demo -D 1 test.ppm --led-pwm-lsb-nanoseconds=100 --led-show-refresh  --led-rows=16 --led-cols=32 --led-chain=3")
 	#subprocess.Popen("sudo ./demo -D 1 test.ppm --led-pwm-lsb-nanoseconds=100 --led-show-refresh  --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
-
+	sys.stdout.flush()
 
 def randomColor():
 	key = random.choice(col.colors.keys())

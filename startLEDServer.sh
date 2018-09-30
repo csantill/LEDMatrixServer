@@ -1,5 +1,5 @@
 #!/bin/sh
 cd /home/pi/LEDMatrixServer/
-sudo python rpi-server.py
+sudo stdbuf -o0 python -u rpi-server.py &> /tmp/ledserver.log
 
 
