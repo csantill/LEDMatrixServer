@@ -35,9 +35,9 @@ def LED_Message(text):
 			draw.text((x, 0), t, c, font=font)
 			x = x + font.getsize(t)[0]
 		
-	im.save("test.ppm")
+	im.save("/tmp/test.ppm")
 	os.system("killall  -9  demo ")
-	subprocess.Popen("sudo ./demo -D 1 test.ppm   --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
+	subprocess.Popen("sudo ./demo -D 1 /tmp/test.ppm   --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
 	#os.system("./demo -D 1 test.ppm --led-pwm-lsb-nanoseconds=100 --led-show-refresh  --led-rows=16 --led-cols=32 --led-chain=3")
 	#subprocess.Popen("sudo ./demo -D 1 test.ppm --led-pwm-lsb-nanoseconds=100 --led-show-refresh  --led-rows=16 --led-cols=32 --led-chain=3",shell=True)
 
