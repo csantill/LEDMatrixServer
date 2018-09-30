@@ -1,0 +1,1 @@
+sudo python /home/pi/LEDMatrixServer/rpi-server.py > /tmp/ledserver.log
