@@ -44,8 +44,8 @@ function LEDServerSendMessageToServer(message)
     local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
 	config["LEDserver"] + @"led --data '"+message+@"'" ;
  //   print(commandLine +"\n");
-	system("curl "+commandLine);
-	//fe.plugin_command_bg ("curl" , commandLine);
+	//system("curl "+commandLine);
+	fe.plugin_command_bg ("curl" , commandLine);
 }
 
 function LEDServerBuildJson(emul,emulcolor,title,titlecolor)
@@ -120,10 +120,10 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
     //   print(gamme + "\n" );
 	//	}
     //    print("\"" + fe.game_info( Info.Name ) + "\" \""+ fe.game_info( Info.Emulator ) + "\"" );
-		local title =  fe.game_info( Info.Title );
+		local title =  fe.game_info( Info.Title,var );
 		if (title.len() > 0)
 		{
-			local emulator =  fe.game_info( Info.Emulator ) + " " + fe.game_info(Info.System);
+			local emulator =  fe.game_info( Info.Emulator,var ) + " " + fe.game_info(Info.System,var);
 			if ( emulator.len() > 0 )
 			{
 				message = LEDServerBuildJson(emulator,"aqua",title,"red1");

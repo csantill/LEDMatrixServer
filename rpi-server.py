@@ -86,13 +86,13 @@ def api_led2():
 @app.route('/led',methods=['POST'])
 def api_led():
 	# print("in here")
-	print(request)
+	# print(request)
 	# print("type :"  + request.headers['Content-type'])
 	if request.headers['Content-Type'] == 'application/json':
 		jsonMessage = request.get_json(silent=True)
 		emulator = str(jsonMessage['emulator'])
 		game = str(jsonMessage['game'])
-		text_message = ((emulator, col.AQUA	), ("   ", (0, 0, 0)), (game, col.RED1))
+		text_message = ((game, col.AQUA	), ("   ", (0, 0, 0)), (emulator, col.RED1))
 		print(text_message)
 		LED_Message(text_message)
 		return "OK"	
