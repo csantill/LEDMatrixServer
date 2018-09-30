@@ -1,1 +1,5 @@
-sudo python /home/pi/LEDMatrixServer/rpi-server.py > /tmp/ledserver.log
+#!/bin/sh
+cd /home/pi/LEDMatrixServer/
+sudo python rpi-server.py
+
+
