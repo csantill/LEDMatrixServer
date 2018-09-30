@@ -35,8 +35,16 @@ class UserConfig </ help="Integration plug-in for use with LED Server : https://
 	LEDgoodbye="Play again soon";
 }
 
+
+local settings = {
+   delay_timer = 0,
+   led_updated = false,
+   display_delay = 2000,
+   message = ""
+}
 local config=fe.get_config(); // get the plugin settings configured by the user
 
+fe.add_ticks_callback(this, "on_tick");
 fe.add_transition_callback( "LEDServer_plugin_transition" );
 
 function LEDServerSendMessageToServer(message)
@@ -44,8 +52,9 @@ function LEDServerSendMessageToServer(message)
     local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
 	config["LEDserver"] + @"led --data '"+message+@"'" ;
  //   print(commandLine +"\n");
-	//system("curl "+commandLine);
-	fe.plugin_command_bg ("curl" , commandLine);
+	system("curl "+commandLine);
+	settings.led_updated = false;
+	//fe.plugin_command_bg ("curl" , commandLine);
 }
 
 function LEDServerBuildJson(emul,emulcolor,title,titlecolor)
@@ -83,7 +92,11 @@ function when(w) {
 	}
 }
 
-
+function on_tick(tick_time) {
+   if ( settings.led_updated && tick_time - settings.delay_timer >= settings.display_delay ) {
+	   LEDServerSendMessageToServer(settings.message);
+   }
+}
 
 function LEDServer_plugin_transition( ttype, var, ttime ) {
 
@@ -99,8 +112,9 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 	case Transition.StartLayout:
 		if (( var == FromTo.Frontend ) && ( config["LEDwelcome"].len() > 0 ))
 			{
-			message = LEDServerBuildJson(config["LEDwelcome"],"aqua",config["LEDwelcome"],"red1");
-			LEDServerSendMessageToServer(message);
+				settings.delay_timer = fe.layout.time;
+				settings.message  = LEDServerBuildJson(config["LEDwelcome"],"aqua",config["LEDwelcome"],"red1");
+				LEDServerSendMessageToServer(settings.message );
             }
 
 		break;
@@ -108,27 +122,23 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 	case Transition.EndLayout:
 		if (( var == FromTo.Frontend ) && ( config["LEDgoodbye"].len() > 0 ))
         {
-			message = LEDServerBuildJson(config["LEDgoodbye"],"aqua",config["LEDgoodbye"],"red1");
-			LEDServerSendMessageToServer(message);
+			settings.delay_timer = fe.layout.time;
+			settings.message  = LEDServerBuildJson(config["LEDgoodbye"],"aqua",config["LEDgoodbye"],"red1");
+			LEDServerSendMessageToServer(settings.message );
         }
 		break;
 
 	case Transition.ToNewSelection:
-	//	local gamme = fe.game_info(Info.Name);
-	//	if (gamme.len() > 0)
-	//	{
-    //   print(gamme + "\n" );
-	//	}
-    //    print("\"" + fe.game_info( Info.Name ) + "\" \""+ fe.game_info( Info.Emulator ) + "\"" );
+	case Transition.ToNewList:
 		local title =  fe.game_info( Info.Title,var );
 		if (title.len() > 0)
 		{
 			local emulator =  fe.game_info( Info.Emulator,var ) + " " + fe.game_info(Info.System,var);
 			if ( emulator.len() > 0 )
 			{
-				message = LEDServerBuildJson(emulator,"aqua",title,"red1");
-//				print(message);
-				LEDServerSendMessageToServer(message);
+				settings.message = LEDServerBuildJson(emulator,"aqua",title,"red1");
+				settings.delay_timer = fe.layout.time;
+				settings.led_updated = true;
 			}
 		}
 		break;
