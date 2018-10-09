@@ -84,17 +84,17 @@ function LEDServerBuildJson(LEDText,LEDText2)
 { 
 	local q = "\"";
     local q2 = "\"";
-	local mess1 =       q + "text1"      + q + ":" + q + LEDText + q;
-	local mess1 = "," + q + "text2"     + q + ":" + q + LEDText2 + q;	
-	local mess2 = "," + q + "LEDBrightness" + q + ":" + q + config["LEDBrightness"] + q;
-	local mess3 = "," + q + "color1"     + q + ":" + q + config["LEDtextcolor1"] + q;
-	local mess4 = "," + q + "color2"     + q + ":" + q + config["LEDtextcolor2"] + q;
-	local mess5 = "," + q + "GPIO"       + q + ":" + q + config["LEDGPIO"] + q;
-	local mess6 = "," + q + "LEDChain"   + q + ":" + q + config["LEDChain"] + q; 
-	local mess7 = "," + q + "LEDRows"    + q + ":" + q + config["LEDRows"] + q; 
-	local mess8 = "," + q + "LEDCols"    + q + ":" + q + config["LEDCols"] + q;
+	local mess1 =       q + "text1"         + q + ":" + q + LEDText  + q;
+	local mess2 = "," + q + "text2"         + q + ":" + q + LEDText2 + q;	
+	local mess3 = "," + q + "LEDBrightness" + q + ":" + q + config["LEDBrightness"] + q;
+	local mess4 = "," + q + "color1"        + q + ":" + q + config["LEDtextcolor1"] + q;
+	local mess5 = "," + q + "color2"        + q + ":" + q + config["LEDtextcolor2"] + q;
+	local mess6 = "," + q + "GPIO"          + q + ":" + q + config["LEDGPIO"]  + q;
+	local mess7 = "," + q + "LEDChain"      + q + ":" + q + config["LEDChain"] + q; 
+	local mess8 = "," + q + "LEDRows"       + q + ":" + q + config["LEDRows"]  + q; 
+	local mess9 = "," + q + "LEDCols"       + q + ":" + q + config["LEDCols"]  + q;
 
-	local message = "{" + mess1 + mess2 + mess3 + mess4 + mess5 + "}" ;
+	local message = "{" + mess1 + mess2 + mess3 + mess4 + mess5 +  mess6 + mess7 + mess8 + mess9+"}" ;
 	return message
 }
 // For debuggin purposes
@@ -147,6 +147,7 @@ function getDisplayText(displayoption,offset)
 	{
 		message= getgameInfo(Info.Emulator,offset) + " " +  getgameInfo(Info.System,offset) ;
 	}
+	return message;
 
 }
 

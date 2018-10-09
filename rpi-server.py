@@ -106,7 +106,7 @@ def api_led():
 		params = (" --led-rows=" + LEDRows + " --led-cols=" + LEDCols + " --led-chain=" +LEDChain +
 		 		  " --led-gpio-mapping=" + GPIO + " --led-brightness=" + LEDBrightness)
 		print(params)
-		text_message = ((text1, col.colors[color1]	), ("   ", (0, 0, 0)), (text2, col.colors[color2]))
+		text_message = ((text1, col.hg [color1]	), ("   ", (0, 0, 0)), (text2, col.colors[color2]))
 		print(text_message)
 		LED_Message(text_message,params)
 		return "OK"	
