@@ -24,14 +24,37 @@ class UserConfig </ help="Integration plug-in for use with LED Server : https://
 	</ label="Server Address", help="Url of LED Webserver", order=1 />
 	LEDserver="http://LEDServer:5000/";
 
-	</ label="Emulator Color", help="Default color for emulator", order=2, options="red1, yellow1, violet, aqua,darkslateblue" />
-	emulatorcolor="red1";
+	</ label="Text Color 1", help="Text Color", order=2, options="red1, yellow1, violet, aqua,darkslateblue" />
+	LEDtextcolor1="red1";
 
+	</ label="Text Color 2", help="Next Text Color", order=3, options="red1, yellow1, violet, aqua,darkslateblue" />
+	LEDtextcolor2="violet";
+	
+	</ label="LED Brightness", help="LED Brightness" , order=4 />
+	LEDBrightness="75";
 
-	</ label="Welcome Message", help="Message to Display on startup", order=3 />
+	</ label="GPIO Mapping", help="GPIO Mapping", order=5, options="regular, adafruit-hat, adafruit-hat-pwm" />
+	LEDGPIO="regular";	
+
+	</ label="LED Chain", help="LED Chain", order=6, options="1,2,3" />
+	LEDChain="3";		
+
+	</ label="LED Rows", help="LED Rows", order=7, options="8,16,32,64" />
+	LEDRows="16";		
+
+	</ label="LED Cols", help="LED Cols", order=8, options="32,64" />
+	LEDCols="32";				
+
+	</ label="Game Info", help="Game Information", order=9, options="Game, Game + Year , Emulator, Emulator + System" />
+	LEDtext1="Game";
+
+	</ label="Game Info", help="Game Information", order=10, options="Game, Game + Year , Emulator, Emulator + System" />
+	LEDtext2="Emulator";
+
+	</ label="Welcome Message", help="Message to Display on startup", order=11 />
 	LEDwelcome="Welcome to my Arcade";
 
-	</ label="Goodbye Message", help="Message to Display on exit", order=4 />
+	</ label="Goodbye Message", help="Message to Display on exit", order=12 />
 	LEDgoodbye="Play again soon";
 }
 
@@ -50,20 +73,28 @@ fe.add_transition_callback( "LEDServer_plugin_transition" );
 function LEDServerSendMessageToServer(message)
 {
     local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
-	config["LEDserver"] + @"led --data '"+message+@"'" ;
+	config["LEDserver"] + @"led --data '"+message+@"' &" ;
  //   print(commandLine +"\n");
 	system("curl "+commandLine);
 	settings.led_updated = false;
 	//fe.plugin_command_bg ("curl" , commandLine);
 }
 
-function LEDServerBuildJson(emul,emulcolor,title,titlecolor)
+function LEDServerBuildJson(LEDText,LEDText2)
 { 
 	local q = "\"";
     local q2 = "\"";
-	local mess1 = q + "emulator" + q;
-	local mess2 =  q + emul + q ;
-	local message = "{" + mess1 +  ":"+ mess2 + "," + q + "game" + q + ":" + q + title + q + "}" ;
+	local mess1 =       q + "text1"      + q + ":" + q + LEDText + q;
+	local mess1 = "," + q + "text2"     + q + ":" + q + LEDText2 + q;	
+	local mess2 = "," + q + "LEDBrightness" + q + ":" + q + config["LEDBrightness"] + q;
+	local mess3 = "," + q + "color1"     + q + ":" + q + config["LEDtextcolor1"] + q;
+	local mess4 = "," + q + "color2"     + q + ":" + q + config["LEDtextcolor2"] + q;
+	local mess5 = "," + q + "GPIO"       + q + ":" + q + config["LEDGPIO"] + q;
+	local mess6 = "," + q + "LEDChain"   + q + ":" + q + config["LEDChain"] + q; 
+	local mess7 = "," + q + "LEDRows"    + q + ":" + q + config["LEDRows"] + q; 
+	local mess8 = "," + q + "LEDCols"    + q + ":" + q + config["LEDCols"] + q;
+
+	local message = "{" + mess1 + mess2 + mess3 + mess4 + mess5 + "}" ;
 	return message
 }
 // For debuggin purposes
@@ -98,6 +129,34 @@ function on_tick(tick_time) {
    }
 }
 
+function getDisplayText(displayoption,offset)
+{
+	//Game, Game + Year , Emulator, Emulator + System
+	local message = "";
+	if (displayoption =="Game" )
+	{
+		message=getgameInfo(Info.Title,offset)+ " ";
+	} else 	if (displayoption =="Game + Year" )
+	{
+		message= getgameInfo(Info.Title,offset) + " " + getgameInfo(Info.Year,offset) ;
+	} else 	if (displayoption =="Emulator" )
+	{
+		message= getgameInfo(Info.Emulator,offset) + " " ;
+
+	} else 	if (displayoption =="Emulator + System" )
+	{
+		message= getgameInfo(Info.Emulator,offset) + " " +  getgameInfo(Info.System,offset) ;
+	}
+
+}
+
+function getgameInfo(info,offset) {
+	local text =  fe.game_info( info, offset );
+	if (text.len() > 0) 
+		return text;
+	return "";
+}
+
 function LEDServer_plugin_transition( ttype, var, ttime ) {
 
 	if ( ScreenSaverActive )
@@ -113,7 +172,7 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 		if (( var == FromTo.Frontend ) && ( config["LEDwelcome"].len() > 0 ))
 			{
 				settings.delay_timer = fe.layout.time;
-				settings.message  = LEDServerBuildJson(config["LEDwelcome"],"aqua",config["LEDwelcome"],"red1");
+				settings.message  = LEDServerBuildJson(config["LEDwelcome"],config["LEDwelcome"]);
 				LEDServerSendMessageToServer(settings.message );
             }
 
@@ -123,24 +182,19 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 		if (( var == FromTo.Frontend ) && ( config["LEDgoodbye"].len() > 0 ))
         {
 			settings.delay_timer = fe.layout.time;
-			settings.message  = LEDServerBuildJson(config["LEDgoodbye"],"aqua",config["LEDgoodbye"],"red1");
+			settings.message  = LEDServerBuildJson(config["LEDgoodbye"],config["LEDgoodbye"]);
 			LEDServerSendMessageToServer(settings.message );
         }
 		break;
 
 	case Transition.ToNewSelection:
 	case Transition.ToNewList:
-		local title =  fe.game_info( Info.Title,var );
-		if (title.len() > 0)
-		{
-			local emulator =  fe.game_info( Info.Emulator,var ) + " " + fe.game_info(Info.System,var);
-			if ( emulator.len() > 0 )
-			{
-				settings.message = LEDServerBuildJson(emulator,"aqua",title,"red1");
-				settings.delay_timer = fe.layout.time;
-				settings.led_updated = true;
-			}
-		}
+		local text1= getDisplayText( config["LEDtext1"],var);
+		local text2= getDisplayText( config["LEDtext2"],var);
+
+		settings.message = LEDServerBuildJson(text1,text2);
+		settings.delay_timer = fe.layout.time;
+		settings.led_updated = true;
 		break;
 	}
 
