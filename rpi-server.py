@@ -13,16 +13,16 @@ from flask import request
 import subprocess
 
 def LED_Message(text,params):
-	print(text)
+	#print(text)
 	font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSans.ttf", 16)
 	all_text = ""	
 	for text_color_pair in text:
 		t = text_color_pair[0]
 		all_text = all_text + t
 
-	print(all_text)
+	#print(all_text)
 	width, _ = font.getsize(all_text)
-	print(width)
+	#print(width)
 	im = Image.new("RGB", (width + 30, 16), "black")
 	draw = ImageDraw.Draw(im)
 
@@ -30,7 +30,7 @@ def LED_Message(text,params):
 	for text_color_pair in text:
 			t = text_color_pair[0]
 			c = text_color_pair[1]
-			print("t=" + t + " " + str(c) + " " + str(x))
+			#print("t=" + t + " " + str(c) + " " + str(x))
 			draw.text((x, 0), t, c, font=font)
 			x = x + font.getsize(t)[0]
 		
@@ -67,7 +67,7 @@ def api_ledmessage():
 		color = randomColor()
 		text_message = ((emulator, color	),("   ", (0, 0, 0)),(emulator, col.AQUA	))
 		params = "--led-rows=16 --led-cols=32 --led-chain=3"
-		LED_Message(text_message,prams)
+		LED_Message(text_message,params)
 		return render_template('main.html', name="main")
 
 @app.route('/emu',methods=['POST'])
@@ -77,7 +77,7 @@ def api_led2():
 		emulator = str(Message['emulator'])
 		game = str(Message['game'])
 		text_message = ((emulator, col.AQUA	), (" ", (0, 0, 0)), (game, col.RED1))
-		print(text_message)
+		#print(text_message)
 		params = "--led-rows=16 --led-cols=32 --led-chain=3"
 		LED_Message(text_message,params)
 		return render_template('index.html', name="index")
@@ -92,8 +92,9 @@ def api_led():
 	# print("type :"  + request.headers['Content-type'])
 	if request.headers['Content-Type'] == 'application/json':
 		jsonMessage = request.get_json(silent=True)
+		#print(jsonMessage)
 		text1 = str(jsonMessage['text1'])
-		text2 = str(jsonMessage['text1'])
+		text2 = str(jsonMessage['text2'])
 		color1 = str(jsonMessage['color1'])
 		color2 = str(jsonMessage['color2'])
 
@@ -105,9 +106,13 @@ def api_led():
 
 		params = (" --led-rows=" + LEDRows + " --led-cols=" + LEDCols + " --led-chain=" +LEDChain +
 		 		  " --led-gpio-mapping=" + GPIO + " --led-brightness=" + LEDBrightness)
-		print(params)
-		text_message = ((text1, col.hg [color1]	), ("   ", (0, 0, 0)), (text2, col.colors[color2]))
-		print(text_message)
+		#print(params)
+		#print(text1)
+		#print(text2)
+		#print(color1)
+		#print(color2)
+		text_message = ((text1, col.colors[color1]	), ("   ", (0, 0, 0)), (text2, col.colors[color2]))
+		#print(text_message)
 		LED_Message(text_message,params)
 		return "OK"	
 
