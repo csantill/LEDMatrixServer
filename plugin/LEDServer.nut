@@ -63,6 +63,7 @@ local settings = {
    delay_timer = 0,
    led_updated = false,
    display_delay = 2000,
+   display_welcome = true,
    message = ""
 }
 local config=fe.get_config(); // get the plugin settings configured by the user
@@ -127,7 +128,9 @@ function when(w) {
 function on_tick(tick_time) {
    if ( settings.led_updated && tick_time - settings.delay_timer >= settings.display_delay ) {
 	   LEDServerSendMessageToServer(settings.message);
-   }
+	   settings.display_welcome = false;
+	   settings.display_delay = 500;
+	    }
 }
 
 function getDisplayText(displayoption,offset)
