@@ -130,7 +130,7 @@ function on_tick(tick_time) {
 	   LEDServerSendMessageToServer(settings.message);
 	   settings.display_welcome = false;
 	   settings.display_delay = 500;
-	    }
+    }
 }
 
 function getDisplayText(displayoption,offset)
@@ -174,11 +174,11 @@ function LEDServer_plugin_transition( ttype, var, ttime ) {
 	{
 	case Transition.StartLayout:
 		if (( var == FromTo.Frontend ) && ( config["LEDwelcome"].len() > 0 ))
-			{
-				settings.delay_timer = fe.layout.time;
-				settings.message  = LEDServerBuildJson(config["LEDwelcome"],config["LEDwelcome"]);
-				LEDServerSendMessageToServer(settings.message );
-            }
+		{
+			settings.delay_timer = fe.layout.time;
+			settings.message  = LEDServerBuildJson(config["LEDwelcome"],config["LEDwelcome"]);
+			LEDServerSendMessageToServer(settings.message );
+		}
 
 		break;
 
