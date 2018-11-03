@@ -5,8 +5,15 @@
 <h2>LED Matrix message</h2>
 
 <form action="/ledmessage" method ="POST">
-  Emulatpr:<br>
+  Emulator:
   <input type="text" name="message" value="*** Hello World !!! ****">
+  <br>
+  GPIO Wiring:
+  <select name="GPIO">
+    <option value="regular">Regular</option>
+    <option value="adafruit-hat" selected>adafruit-hat</option>
+    <option value="adafruit-hat-pwm">adafruit-hat-pwm</option>
+  </select>
   <br><br>
   <input type="submit" value="Submit">
 </form> 

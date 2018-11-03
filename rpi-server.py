@@ -64,23 +64,13 @@ def api_ledmessage():
 	if request.headers['Content-Type'] == 'application/x-www-form-urlencoded':
 		Message = request.form
 		emulator = str(Message['message'])
+		GPIO = str(Message['GPIO'])
 		color = randomColor()
 		text_message = ((emulator, color	),("   ", (0, 0, 0)),(emulator, col.AQUA	))
-		params = "--led-rows=16 --led-cols=32 --led-chain=3"
+		params = "--led-rows=16 --led-cols=32 --led-chain=3 --led-gpio-mapping=" + GPIO
+		print(params)
 		LED_Message(text_message,params)
 		return render_template('main.html', name="main")
-
-@app.route('/emu',methods=['POST'])
-def api_led2():
-	if request.headers['Content-Type'] == 'application/x-www-form-urlencoded':
-		Message = request.form
-		emulator = str(Message['emulator'])
-		game = str(Message['game'])
-		text_message = ((emulator, col.AQUA	), (" ", (0, 0, 0)), (game, col.RED1))
-		#print(text_message)
-		params = "--led-rows=16 --led-cols=32 --led-chain=3"
-		LED_Message(text_message,params)
-		return render_template('index.html', name="index")
 
 
 #curl -H "Content-type: application/json" --request POST http://192.168.1.220:5000/led --data '{"emulator":"MAME","game":"space"}'^

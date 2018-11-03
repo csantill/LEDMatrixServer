@@ -54,6 +54,9 @@ class UserConfig </ help="Integration plug-in for use with LED Server : https://
 	</ label="Welcome Message", help="Message to Display on startup", order=11 />
 	LEDwelcome="Welcome to my Arcade";
 
+	</ label="Welcome Message Delay", help="Delay for Welcome Message to Display on startup", order=11 />
+	LEDwelcomeDelay="2000";
+
 	</ label="Goodbye Message", help="Message to Display on exit", order=12 />
 	LEDgoodbye="Play again soon";
 }
@@ -70,7 +73,7 @@ local config=fe.get_config(); // get the plugin settings configured by the user
 
 fe.add_ticks_callback(this, "on_tick");
 fe.add_transition_callback( "LEDServer_plugin_transition" );
-
+settings.display_delay=config["LEDwelcomeDelay"].tointeger();
 function LEDServerSendMessageToServer(message)
 {
     local commandLine = @"-H ""Content-type: application/json "" --request POST " + 
